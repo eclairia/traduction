@@ -1,0 +1,138 @@
+//File which translates the Inesita tutorial to https://inesita.fazibear.me/# in french
+//Author: Adrien Jourdier
+//Translated at 09/04/2017
+
+Left menu:
+
+About => A propos
+Install => Installation
+Application => Application
+Component => Composant
+Injections => Injections
+Router => Routeur
+Awesome Inesita
+
+Tutorial content:
+
+Petite princesse parmi les frameworks frontend
+
+A propos
+
+Inesita est un framework frontend ruby simple et léger.
+Oui, Ruby ne parle que de Ruby et de son ecosystème.
+
+La partie principale est le component. Le composant décrit l'apparence et le comportement de la page. C'est le coeur de Inesita. Les composants peuvent être utilisés seuls et montés dans n'importe quel élément du DOM. Vous n'avez pas besoin d'utiliser la totalité du stack.
+De plus, le composant supporte les injections. Vous pouvez injecter n'importe quelles autres classes dans le composant principal, et seront disponibles dans tous les composants imbriqués. Par exemple, you can inject une classe store pour ranger les données de votre application. Bien sûr, l'implémentation du store dépend entièrement de vous. Un autre exemple d'injection est le routeur. Le router prend soin de la navigation d'URL, comme renvoyer l'arbre des composants dépendant du navigateur d'URL, du changement d'URL, etc.
+
+Installation
+
+Pour installer et essayer Inesita, vous aurez besoin d'un environnement de travail Ruby. Suivez ces instructions pour installer et lancer une application Inesita.
+
+Que faisons nous ?
+
+- Installer la gem Inesita
+- Créer une application appelé inesita_app
+- Allez dans le dossier inesita_app
+- Lancer le serveur
+- Maintenant, bous pouvons aller sur l'url http://localhost:9292
+
+Comme nous pouvons le voir, tout fonctionne. Examinons de plus près l'architecture de notre application.
+
+Application
+
+Regardons ce qu'il se passe. Le fichier principal est app/application.rb. C'est içi que la magie commence.
+
+Içi, vous pouvez appeler tous les fichiers de votre projet, les gems externes, etc.
+
+- require 'inesita' - Appelle notre framework
+- require 'inesita-router' - Nous aurons besoin d'un routeur pour manipuler les URL.
+- require 'router' - Appelle la configuration de notre routeur.
+- require 'store' - Appelle notre store
+- require_tree './components' -Appelle tous les autres composants dans le dossier components.
+
+Apllication est le composant principal. Comme nous pouvons le voir, nous injections Router et Store, ils seront donc disponibles à travers la totalité de l'arbre du composant comme router et store.
+
+Dans store, nous stockerons l'état de l'application et toutes ses données, router, nous renverra notre arbre de compsants dépendant du navigateur d'URL.
+
+La méthode renderdéfinit comment Inesita nous renverra notre composant. C'est comme un layout: Navbar et router seront renvoyés dans la div qui contiendra la classe container.
+
+La dernière partie consiste à construire notre application.Quand le document est chargé, notre composant principal se montera dans le tag <body></body>.
+
+Maintenant, examinons de plus près le composant.
+
+Composant
+
+Comme vous le savez maintenant, le composant est le core d'Inesita. Nous avons vu le composant principal Application,  maintenant, jettons un coup d'oeil sur le composant Home.
+
+C'est un composant simple qui rend le jumbotron bootstrap avec quelques en-têtes.
+Nous utilisons un joli et simple DSl pour renvoyer du HTML. PAs de fichier HTML içi, seulement Ruby.
+
+Donc, Home est un composant très simple qui renverra seulement du HTML.
+
+Comme vous pouvez le voir, nous pouvons passer des class pour définir les classes des éléments., mais aussi id,onclicks, et d'autres attributs. Remarquez que vous pouvez utiliser un raccourci pour les classes d'un élément comme div.jumbotron. Dans ce cas, la div inclura la class jumbotron et la classe text-center. Vous pouvez aussi faire div.example! - le point d'exclamation signifie que example est un id et non une classe.
+
+Ce composant renverra aussi composant enfant appelé counter et y passe aussi quelques accesoires (props).
+
+Maintenant, jettons un coup d'oeil au composant counter.
+
+Wow, il y a un tas de nouvelles choses. Commençons par la méthode render. Dans le h4 nous renvoyons le texte de l'en-tête provenant de props. - ces éléments ont été transmises par le composant parent.
+
+Le suivant est un bouton.Dans ce cas la méthode dec décrit le comportement onclick.
+Cette méthode invoque les méthodes provenat de store, et renverra l'arbre du composant.
+
+La méthode render! re-renverrala totlité de l'arbre du composant. Pas d'inquiétude, il y a virtual-dom qui nous renverra les différences avec le DOM actuel. C'est rapide.
+
+Il se passe exactement la même chose avec la méthode inc et le bouton +, mais nous utilisons une notation de fonction pour invoquer la méthode dec.
+
+Au milieu, il y a un champ input qui affiche la valeur du compteur provenant de store.
+
+Evidement, vous pouvez stocker l'état du composant dans des variables d'instance, cela dépend de vous.
+
+Maintenant nous avons besoins de jetter un coup d'oeil sur les injections.
+
+Injections
+
+Les injections sont simplement d'autres classes qui sont inclus dans l'arbre du composant. Dans notre exemple, nous avons les injections store et router.
+
+Jettons un coup d'oeil à notre Store.
+
+C'est un exemple d'injection. Nous incluons Inesita::Injectiondans l'ordre pour être capable d'injecter cette classe dans le composant racine.
+
+Dans cet exemple, nous stockons la valeur du compteur.
+
+La méthode init initialise notre store. Au début nous initialisons le compteur à 0.
+
+La méthode increase incrémente la valeur actuelle de 1.
+
+La méthode decrease décrémente la valeur actuelle de 1.
+
+Il y a aussi attr_accessor :counter auquel nous nous pouvons accéder à cette valeur store.-counter.
+
+Simple! N'est-ce pas ?
+
+Vous pouvez injecter d'autres store, mais aussi d'autres choses comme répartiteurs dépendant de l'architecture que vous voulez obtenir.
+
+Router
+
+Router est un composant, mais aussi une injection.C'est un séparateur de gem nommé insita-router.
+
+Avec le routeur vous êtes capable de renvoyer le composant dépendant de l'URL actuelle.
+
+
+
+Cette classe décrit notre routeur fonctionnera.
+
+Avant tout, il inclut Inesita::Router.
+
+Dans la méthode routes, nous fournissons des informations à propos chaque composant renvoyé sur quelle url.
+
+Sur le chemin racine, le / nous renverra le composant Home. Pour l'URL /description, le routeur nous renverra le composant Description. Pour l'URL /secret, le routeur vérifiera si l'utilisateur est connecté. S'il ne l'est pas , il sera redirigé sur l'URL /login. Pour l'URL /login, le routeur renverra le composant Login.
+
+Vous pouvez toujours passer des props aux composants enfants.
+
+Le routeur comme une injection fournit des méthodes utilises:
+
+- La méthode url_for(:name) retourne une URl pour un itinéraire donné.
+- La méthode current_url?(:name) retourne true si l'itinéraire donné est actuellement configuré.
+
+Quand nous utilisons inesita-router, les événements onclick sont gérés par le routeur automatiquement.
